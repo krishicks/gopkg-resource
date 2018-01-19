@@ -1,0 +1,21 @@
+#!/bin/bash
+set -o errexit -o nounset -o pipefail
+
+package=$1
+package_dir=$(go list -f '{{.Dir}}' ${package})
+
+cd ${package_dir}
+git_root=$(git rev-parse --show-toplevel)
+cd ${git_root}
+
+dep_packages=$(go list -f '{{join .Deps "\n"}}' ${package} | xargs go list -f '{{if not .Standard}}{{.Dir}}{{end}}')
+repo_packages=""
+
+for dep in ${dep_packages}; do
+    if [[ "${dep}" == "${git_root}/"* ]]; then
+        repo_packages+="${dep} "
+    fi
+done
+
+echo ${repo_packages}
+

@@ -7,6 +7,8 @@ RUN git clone https://github.com/proxytunnel/proxytunnel.git
 WORKDIR /root/proxytunnel
 RUN make
 
+FROM golang:alpine3.7 as golang
+
 FROM alpine:edge AS resource
 
 RUN apk --no-cache add \
@@ -24,6 +26,8 @@ RUN apk --no-cache add \
   libstdc++
 
 COPY --from=tunnelbuilder /root/proxytunnel/proxytunnel proxytunnel
+COPY --from=golang /usr/local/go /usr/local/go
+ENV PATH $PATH:/usr/local/go/bin
 
 RUN /usr/bin/install -c proxytunnel /usr/bin/proxytunnel
 
