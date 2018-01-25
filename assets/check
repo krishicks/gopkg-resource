@@ -24,7 +24,7 @@ uri=$(jq -r '.source.uri // ""' < $payload)
 branch=$(jq -r '.source.branch // ""' < $payload)
 paths="$(jq -r '(.source.paths // ["."])[]' < $payload)" # those "'s are important
 ignore_paths="$(jq -r '":!" + (.source.ignore_paths // [])[]' < $payload)" # these ones too
-gopkgs="$(jq -r '(.source.gopkgs // [])[]' < $payload)" # and these
+gopkg=$(jq -r '.source.gopkg // ""' < $payload)
 gopath=$(jq -r '.source.gopath // ""' < $payload)
 tag_filter=$(jq -r '.source.tag_filter // ""' < $payload)
 git_config_payload=$(jq -r '.source.git_config // []' < $payload)
@@ -60,11 +60,11 @@ else
   log_range="-1"
 fi
 
-if [ -n "$gopkgs" ]; then
+if [ -n "$gopkg" ]; then
     if [ -z "$gopath" ]; then
         gopath="$destination/go"
     fi
-    paths="$paths $(GOPATH=$gopath /opt/resource/godeps $gopkgs)"
+    paths="$paths $(GOPATH=$gopath /opt/resource/godeps $gopkg)"
 fi
 
 if [ "$paths" = "." ] && [ -z "$ignore_paths" ]; then
