@@ -64,6 +64,9 @@ if [ -n "$gopkg" ]; then
     if [ -z "$gopath" ]; then
         gopath="$destination/go"
     fi
+    if [ "$paths" = "." ]; then
+        paths=""
+    fi
     paths="$paths $(GOPATH=$gopath /opt/resource/godeps $gopkg)"
 fi
 
