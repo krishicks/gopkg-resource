@@ -11,6 +11,7 @@ cd ${git_root}
 dep_packages=$(go list -f '{{join .Deps "\n"}}' ${package} | xargs go list -f '{{if not .Standard}}{{.Dir}}{{end}}')
 repo_packages=""
 
+echo ${package_dir}
 for dep in ${dep_packages}; do
     if [[ "${dep}" == "${git_root}/"* ]]; then
         repo_packages+="${dep} "
